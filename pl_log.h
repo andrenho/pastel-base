@@ -1,17 +1,28 @@
 #ifndef PL_LOG_H
 #define PL_LOG_H
 
-typedef enum pl_Level { PL_TRACE_LEVEL, PL_DEBUG_LEVEL, PL_INFO_AND_UP } pl_Level;
+typedef enum pl_Level { PL_TRACE_LEVEL = 2, PL_DEBUG_LEVEL = 1, PL_INFO_AND_UP = 0 } pl_Level;
 
 void        pl_init();
+void        pl_close();
 void        pl_set_level(pl_Level level);
 const char* pl_last_error();
 void        pl_set_warning_callback(void (*cb)(void* data), void* data);
 void        pl_set_error_callback(void (*cb)(void* data), void* data);
 void        pl_set_abort_callback(void (*cb)(void* data), void* data);
 
+#define PL_TRACE(msg, ...) { pl_log(PL_TRACE_LEVEL, "\e[90m", "TRACE", false, msg, ##__VA_ARGS__); }
+#define PL_DEBUG(msg, ...) { pl_log(PL_DEBUG_LEVEL, "\e[33m", "DEBUG", false, msg, ##__VA_ARGS__); }
+#define PL_INFO(msg, ...) { pl_log(PL_INFO_AND_UP, "\e[0m", "INFO ", false, msg, ##__VA_ARGS__); }
+#define PL_WARNING(msg, ...) { pl_log(PL_INFO_AND_UP, "\e[95m", "WARN ", false, msg, ##__VA_ARGS__); if (pl_warning_callback_) pl_warning_callback_(pl_warning_callback_data_); }
+#define PL_ERROR(msg, ...) { pl_log(PL_INFO_AND_UP, "\e[91m", "ERROR", true, msg, ##__VA_ARGS__); if (pl_error_callback_) pl_error_callback_(pl_error_callback_data_); return; }
+#define PL_ERROR_RET(code, msg, ...) { pl_log(PL_INFO_AND_UP, "\e[91m", "ERROR", true, msg, ##__VA_ARGS__); if (pl_error_callback_) pl_error_callback_(pl_error_callback_data_); return code; }
+#define PL_ABORT() { pl_log(PL_INFO_AND_UP, "\e[31m", "CRITICAL", true, "Aborting due to programming error"); if (pl_abort_callback_) pl_abort_callback_(pl_abort_callback_data_); abort(); }
+
 #ifdef PL_LOG_IMPLEMENTATION
 
+#include <errno.h>
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -30,6 +41,7 @@ void        (*pl_error_callback_)(void* data);
 void*       pl_error_callback_data_;
 void        (*pl_abort_callback_)(void* data);
 void*       pl_abort_callback_data_;
+FILE*       pl_file_ = NULL;
 
 void pl_init()
 {
@@ -40,12 +52,33 @@ void pl_init()
         pl_level_ = PL_DEBUG_LEVEL;
 
     char* color = getenv("PL_COLOR");
-    if (color && strcmp(color, "0"))
+    if (color && strcmp(color, "0") == 0)
         pl_color_ = false;
 
     char* levelname = getenv("PL_LEVELNAME");
-    if (levelname && strcmp(levelname, "0"))
+    if (levelname && strcmp(levelname, "0") == 0)
         pl_levelname_ = false;
+
+    pl_file_ = stderr;
+
+    char* file = getenv("PL_FILE");
+    if (file && strcmp(file, "stdout") == 0) {
+        pl_file_ = stdout;
+    } else if (file && strcmp(file, "stderr") != 0) {
+        FILE* f = fopen(file, "w");
+        if (f) {
+            pl_file_ = f;
+            pl_color_ = false;
+        } else {
+            fprintf(stderr, "Could not open file '%s' for logging: %s", file, strerror(errno));
+        }
+    }
+}
+
+void pl_close()
+{
+    if (pl_file_ != stderr && pl_file_ != stdout)
+        fclose(pl_file_);
 }
 
 void pl_set_level(pl_Level level)
@@ -74,6 +107,27 @@ void pl_set_abort_callback(void (*cb)(void* data), void* data)
 {
     pl_abort_callback_ = cb;
     pl_abort_callback_data_ = data;
+}
+
+void pl_log(pl_Level level, const char* color, const char* lvl, bool copy_error, const char* msg, ...)
+{
+    if (level < pl_level_)
+        return;
+    if (pl_color_)
+        fprintf(pl_file_, "%s", color);
+    if (pl_levelname_)
+        fprintf(pl_file_, "%s: ", lvl);
+
+    va_list ap;
+    va_start(ap, msg);
+    vfprintf(pl_file_, msg, ap);
+    if (copy_error)
+        vsnprintf(pl_last_error_, sizeof pl_last_error_, msg, ap);
+    va_end(ap);
+
+    if (pl_color_)
+        fprintf(pl_file_, "\e[0m");
+    fprintf(pl_file_, "\n");
 }
 
 #endif
