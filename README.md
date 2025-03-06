@@ -1,4 +1,4 @@
-# pastel-log
+# pastel-base
 A simple single-header C logging library.
 
 Usage:
