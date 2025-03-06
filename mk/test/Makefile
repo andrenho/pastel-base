@@ -1,5 +1,8 @@
 PROJECT_NAME = example
 PROJECT_VERSION = 1.0.0
+
+all: example
+
 include ../config.mk
 
 OBJ = example.o
@@ -8,7 +11,7 @@ EMBED = hello.txt
 $(OBJ): $(EMBED:=.h)
 
 $(PROJECT_NAME): $(OBJ) libluajit.a
-	$(CC) -o $@ $^
+	$(CC) -o $@ $^ $(LDFLAGS)
 
 leaks: $(PROJECT_NAME)
 	$(LEAKS_CMD) ./$<
