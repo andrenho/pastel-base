@@ -83,6 +83,8 @@ update:
 # LuaJIT
 #
 
+CPPFLAGS += -I$(CONFIG_MK_DIR)/LuaJIT/src
+
 libluajit.a:
 	$(MAKE) -C $(CONFIG_MK_DIR)/LuaJIT/src MACOSX_DEPLOYMENT_TARGET="${MACOS_VERSION}" libluajit.a
 	cp $(CONFIG_MK_DIR)/LuaJIT/src/libluajit.a .
