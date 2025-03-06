@@ -8,7 +8,7 @@
 
 CFLAGS += -std=c17
 CPPFLAGS += -MMD -MP   # generate dependencies
-CXXFLAGS += -std=c++23
+CXXFLAGS += -std=c++20
 
 ifdef $(RELEASE)
 	CPPFLAGS = -Ofast -flto
@@ -57,8 +57,6 @@ endif
 # rule to print config
 #
 
-all: $(PROJECT_NAME)
-
 .PHONY: config
 config:
 	@echo ===============================
@@ -72,14 +70,11 @@ config:
 	@echo CONFIG_MK_DIR = $(CONFIG_MK_DIR)
 	@echo ===============================
 
-%: | config
-	@true
-
 deepclean:
 	git clean -fdx
 
 update:
-	git submodule update --init --remote --merge
+	git submodule update --init --remote --merge --recursive
 
 #
 # LuaJIT
@@ -93,3 +88,11 @@ libluajit.a:
 
 clean-lua:
 	$(MAKE) -C $(CONFIG_MK_DIR)/LuaJIT MACOSX_DEPLOYMENT_TARGET="${MACOS_VERSION}" clean
+
+#
+# generate compile_commands.json
+#
+
+compile_commands: clean
+	bear -- $(MAKE)
+
