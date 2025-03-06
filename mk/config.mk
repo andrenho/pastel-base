@@ -37,15 +37,16 @@ GENHEADER := $(CONFIG_MK_DIR)/genheader.lua
 
 DEPENDS = $(shell find . -name *.d)
 -include $(DEPENDS)
-CLEANFILES := $(DEPENDS)
+CLEANFILES := $(DEPENDS) libluajit.a
 
 #
 # leak check command
 #
 
 UNAME_S := $(shell uname -s)
-ifeq ($(UNAME_S),Darwin)
+ifeq ($(UNAME_S),Darwin)  # Apple
 	LEAKS_CMD := MallocStackLogging=1 leaks --atExit --
+	MACOS_VERSION := $(shell cut -d '.' -f 1,2 <<< $$(sw_vers -productVersion))
 else
 	LEAKS_CMD := valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --fair-sched=yes --suppressions=valgrind.supp
 endif
@@ -77,3 +78,14 @@ deepclean:
 
 update:
 	git submodule update --init --remote --merge
+
+#
+# LuaJIT
+#
+
+libluajit.a:
+	$(MAKE) -C $(CONFIG_MK_DIR)/LuaJIT/src MACOSX_DEPLOYMENT_TARGET="${MACOS_VERSION}" libluajit.a
+	cp $(CONFIG_MK_DIR)/LuaJIT/src/libluajit.a .
+
+clean-lua:
+	$(MAKE) -C $(CONFIG_MK_DIR)/LuaJIT MACOSX_DEPLOYMENT_TARGET="${MACOS_VERSION}" clean

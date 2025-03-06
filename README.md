@@ -5,7 +5,6 @@ Some goodies to use as base for pastel projects.
 ## mk
 
 `config.mk` - base Makefile configuration for pastel projects, as some useful functions.
-`embed.mk` - allow embedding files into a binary
 
 ## pl-log
 

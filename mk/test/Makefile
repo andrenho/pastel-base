@@ -9,7 +9,7 @@ all: $(PROJECT_NAME)
 
 $(OBJ): $(EMBED:=.h)
 
-$(PROJECT_NAME): $(OBJ)
+$(PROJECT_NAME): $(OBJ) libluajit.a
 	$(CC) -o $@ $^
 
 leaks: $(PROJECT_NAME)
