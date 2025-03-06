@@ -6,7 +6,7 @@
 # compiler configuration
 #
 
-CFLAGS += -std=c23
+CFLAGS += -std=c23 -D_GNU_SOURCE
 CPPFLAGS += -MMD -MP   # generate dependencies
 CXXFLAGS += -std=c++20
 LDFLAGS += -lm
