@@ -47,6 +47,8 @@ UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)  # Apple
 	LEAKS_CMD := MallocStackLogging=1 leaks --atExit --
 	MACOS_VERSION := $(shell cut -d '.' -f 1,2 <<< $$(sw_vers -productVersion))
+	CPPFLAGS += -mmacosx-version-min=$(MACOS_VERSION)
+	export MACOSX_DEPLOYMENT_TARGET=$(MACOS_VERSION)
 else
 	LEAKS_CMD := valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --fair-sched=yes --suppressions=valgrind.supp
 endif

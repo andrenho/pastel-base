@@ -5,8 +5,6 @@ include ../config.mk
 OBJ = example.o
 EMBED = hello.txt
 
-all: $(PROJECT_NAME)
-
 $(OBJ): $(EMBED:=.h)
 
 $(PROJECT_NAME): $(OBJ) libluajit.a
