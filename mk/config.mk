@@ -45,6 +45,7 @@ CLEANFILES := $(DEPENDS) libluajit.a
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)  # Apple
+	APPLE := 1
 	LEAKS_CMD := MallocStackLogging=1 leaks --atExit --
 	MACOS_VERSION := $(shell cut -d '.' -f 1,2 <<< $$(sw_vers -productVersion))
 	CPPFLAGS += -mmacosx-version-min=$(MACOS_VERSION)
