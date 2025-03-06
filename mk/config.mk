@@ -6,9 +6,10 @@
 # compiler configuration
 #
 
-CFLAGS += -std=c17
+CFLAGS += -std=c23
 CPPFLAGS += -MMD -MP   # generate dependencies
 CXXFLAGS += -std=c++20
+LDFLAGS += -lm
 
 ifdef $(RELEASE)
 	CPPFLAGS = -Ofast -flto
