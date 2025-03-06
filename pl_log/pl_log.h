@@ -28,7 +28,7 @@ extern void call_abort_callback();
 #define PL_TRACE(msg, ...) { pl_log(PL_TRACE_LEVEL, "\e[90m", "TRACE", false, msg, ##__VA_ARGS__); }
 #define PL_DEBUG(msg, ...) { pl_log(PL_DEBUG_LEVEL, "\e[33m", "DEBUG", false, msg, ##__VA_ARGS__); }
 #define PL_INFO(msg, ...) { pl_log(PL_INFO_AND_UP, "\e[0m", "INFO ", false, msg, ##__VA_ARGS__); }
-#define PL_WARNING(msg, ...) { pl_log(PL_INFO_AND_UP, "\e[95m", "WARN ", false, msg, ##__VA_ARGS__); call_warning_callbacl(); }
+#define PL_WARNING(msg, ...) { pl_log(PL_INFO_AND_UP, "\e[95m", "WARN ", false, msg, ##__VA_ARGS__); call_warning_callback(); }
 #define PL_ERROR(msg, ...) { pl_log(PL_INFO_AND_UP, "\e[91m", "ERROR", true, msg, ##__VA_ARGS__); call_error_callback(); return; }
 #define PL_ERROR_RET(code, msg, ...) { pl_log(PL_INFO_AND_UP, "\e[91m", "ERROR", true, msg, ##__VA_ARGS__); call_error_callback(); return code; }
 #define PL_ABORT() { pl_log(PL_INFO_AND_UP, "\e[31m", "CRITICAL", true, "Aborting due to programming error"); call_abort_callback(); abort(); }
