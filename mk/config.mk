@@ -13,7 +13,8 @@ LDFLAGS += -lm
 
 ifdef RELEASE
 	CPPFLAGS += -Ofast -flto -fdata-sections -ffunction-sections -flto
-	LDFLAGS += -flto -Wl,--gc-sections
+	#LDFLAGS += -flto -Wl,--gc-sections
+	LDFLAGS += -flto -Wl,-dead_strip
 else
 	CPPFLAGS += -Wall -Wextra -Wformat-nonliteral -Wshadow -Wwrite-strings -Wmissing-format-attribute -Wswitch-enum -Wmissing-noreturn -Wno-unused-parameter -Wno-unused
 	ifeq ($(CXX),gcc)
