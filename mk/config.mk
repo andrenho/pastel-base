@@ -12,8 +12,8 @@ CXXFLAGS += -std=c++20
 LDFLAGS += -lm
 
 ifdef RELEASE
-	CPPFLAGS += -Ofast -flto
-	LDFLAGS += -flto
+	CPPFLAGS += -Ofast -flto -fdata-sections -ffunction-sections -flto
+	LDFLAGS += -flto -Wl,--gc-sections
 else
 	CPPFLAGS += -Wall -Wextra -Wformat-nonliteral -Wshadow -Wwrite-strings -Wmissing-format-attribute -Wswitch-enum -Wmissing-noreturn -Wno-unused-parameter -Wno-unused
 	ifeq ($(CXX),gcc)
@@ -49,15 +49,13 @@ CLEANFILES := $(DEPENDS) libluajit.a
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)  # Apple
 	APPLE := 1
-	CFLAGS += -std=c2x
 	LEAKS_CMD := MallocStackLogging=1 leaks --atExit --
 	MACOS_VERSION := $(shell cut -d '.' -f 1,2 <<< $$(sw_vers -productVersion))
+	CFLAGS += -std=c2x
 	CPPFLAGS += -mmacosx-version-min=$(MACOS_VERSION)
 	export MACOSX_DEPLOYMENT_TARGET=$(MACOS_VERSION)
 else
 	CFLAGS += -std=c23
-	CPPFLAGS += -fdata-sections -ffunction-sections -flto
-	LDFLAGS += -Wl,--gc-sections
 	LEAKS_CMD := valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --fair-sched=yes --suppressions=valgrind.supp
 endif
 
