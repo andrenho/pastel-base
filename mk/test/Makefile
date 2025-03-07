@@ -8,10 +8,10 @@ include ../config.mk
 OBJ = example.o
 EMBED = hello.txt
 
-$(OBJ): $(EMBED:=.h)
-$(OBJ): libluajit.a
+$(UI_OBJ): $(EMBED:=.h)
+$(UI_OBJ): libluajit.a
 
-$(PROJECT_NAME): $(OBJ) libluajit.a libSDL3.a
+$(PROJECT_NAME): $(UI_OBJ) libluajit.a libSDL3.a
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 leaks: $(PROJECT_NAME)
@@ -22,7 +22,7 @@ package: | clean
 
 .PHONY: clean
 clean:
-	rm -f example $(OBJ) $(CLEANFILES) $(EMBED:=.h) $(PROJECT_NAME)-*.tar.bz2 *.a
+	rm -f example $(UI_OBJ) $(CLEANFILES) $(EMBED:=.h) $(PROJECT_NAME)-*.tar.bz2 *.a
 
 .PHONY: install
 install: $(PROJECT_NAME)
