@@ -87,14 +87,29 @@ update:
 # LuaJIT
 #
 
-CPPFLAGS += -I$(CONFIG_MK_DIR)/LuaJIT/src
+LUAJIT_PATH = $(CONFIG_MK_DIR)LuaJIT
+SDL3_PATH = $(CONFIG_MK_DIR)SDL3
+CPPFLAGS += -I$(LUAJIT_PATH)/src
 
 libluajit.a:
-	$(MAKE) -C $(CONFIG_MK_DIR)/LuaJIT/src MACOSX_DEPLOYMENT_TARGET="${MACOS_VERSION}" libluajit.a
-	cp $(CONFIG_MK_DIR)/LuaJIT/src/libluajit.a .
+	mkdir -p $(LUAJIT_PATH)
+	git clone --depth=1 https://github.com/LuaJIT/LuaJIT.git $(LUAJIT_PATH) || true
+	rm -rf !$/.git
+	$(MAKE) -C $(LUAJIT_PATH)/src MACOSX_DEPLOYMENT_TARGET=$(MACOS_VERSION) libluajit.a
+	cp $(LUAJIT_PATH)/src//libluajit.a .
+	rm -rf $(LUAJIT_PATH)
+
+libSDL3.a:
+	mkdir -p $(SDL3_PATH)
+	git clone --depth=1 https://github.com/libsdl-org/SDL $(SDL3_PATH) || true
+	rm -rf !$/.git
+	cmake -B build-sdl3 -S $(SDL3_PATH) -DCMAKE_OSX_DEPLOYMENT_TARGET=${MACOS_VERSION} -DCMAKE_BUILD_TYPE=Release -DSDL_SHARED=OFF -DSDL_STATIC=ON && cd ..
+	$(MAKE) -C build-sdl3
+	cp build-sdl3/libSDL3.a .
+	rm -rf $(SDL3_PATH) build-sdl3
 
 clean-lua:
-	$(MAKE) -C $(CONFIG_MK_DIR)/LuaJIT MACOSX_DEPLOYMENT_TARGET="${MACOS_VERSION}" clean
+	$(MAKE) -C $(CONFIG_MK_DIR)/LuaJIT MACOSX_DEPLOYMENT_TARGET=$(MACOS_VERSION) clean
 
 #
 # generate compile_commands.json
