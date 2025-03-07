@@ -2,3 +2,4 @@
 *.d
 example
 *.txt.h
+build-sdl3/

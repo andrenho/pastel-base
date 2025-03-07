@@ -97,7 +97,7 @@ libluajit.a:
 	rm -rf !$/.git
 	$(MAKE) -C $(LUAJIT_PATH)/src MACOSX_DEPLOYMENT_TARGET=$(MACOS_VERSION) libluajit.a
 	cp $(LUAJIT_PATH)/src//libluajit.a .
-	rm -rf $(LUAJIT_PATH)
+	#rm -rf $(LUAJIT_PATH)
 
 libSDL3.a:
 	mkdir -p $(SDL3_PATH)
@@ -106,7 +106,7 @@ libSDL3.a:
 	cmake -B build-sdl3 -S $(SDL3_PATH) -DCMAKE_OSX_DEPLOYMENT_TARGET=${MACOS_VERSION} -DCMAKE_BUILD_TYPE=Release -DSDL_SHARED=OFF -DSDL_STATIC=ON && cd ..
 	$(MAKE) -C build-sdl3
 	cp build-sdl3/libSDL3.a .
-	rm -rf $(SDL3_PATH) build-sdl3
+	#rm -rf $(SDL3_PATH) build-sdl3
 
 clean-lua:
 	$(MAKE) -C $(CONFIG_MK_DIR)/LuaJIT MACOSX_DEPLOYMENT_TARGET=$(MACOS_VERSION) clean
