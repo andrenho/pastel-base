@@ -57,7 +57,8 @@ ifeq ($(UNAME_S),Darwin)  # Apple
 	export MACOSX_DEPLOYMENT_TARGET=$(MACOS_VERSION)
 else
 	CFLAGS += -std=c23
-	LEAKS_CMD := valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --fair-sched=yes --suppressions=valgrind.supp
+	LEAKS_CMD := valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --fair-sched=yes
+	LEAKS_SUPP := --suppressions=valgrind.supp
 endif
 
 #
