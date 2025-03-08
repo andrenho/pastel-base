@@ -12,7 +12,7 @@ CXXFLAGS += -std=c++20
 LDFLAGS += -lm
 
 ifdef RELEASE
-	CPPFLAGS += -Ofast -flto -fdata-sections -ffunction-sections -flto
+	CPPFLAGS += -Ofast -flto -fdata-sections -ffunction-sections -flto -DNDEBUG
 	#LDFLAGS += -flto -Wl,--gc-sections
 	LDFLAGS += -flto -Wl,-dead_strip
 else
