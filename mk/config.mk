@@ -16,10 +16,11 @@ ifdef RELEASE
 	#LDFLAGS += -flto -Wl,--gc-sections
 	LDFLAGS += -flto -Wl,-dead_strip
 else
-	CPPFLAGS += -Wall -Wextra -Wformat-nonliteral -Wshadow -Wwrite-strings -Wmissing-format-attribute -Wswitch-enum -Wmissing-noreturn -Wno-unused-parameter -Wno-unused
+	WARNINGS := -Wall -Wextra -Wformat-nonliteral -Wshadow -Wwrite-strings -Wmissing-format-attribute -Wswitch-enum -Wmissing-noreturn
 	ifeq ($(CXX),gcc)
-		CPPFLAGS += -Wsuggest-attribute=pure -Wsuggest-attribute=const -Wsuggest-attribute=noreturn -Wsuggest-attribute=malloc -Wsuggest-attribute=format -Wsuggest-attribute=cold
+		WARNINGS += -Wsuggest-attribute=pure -Wsuggest-attribute=const -Wsuggest-attribute=noreturn -Wsuggest-attribute=malloc -Wsuggest-attribute=format -Wsuggest-attribute=cold
 	endif
+	WARNINGS += -Wno-unused-parameter -Wno-unused -Wno-unknown-warning-option -Wno-sign-compare  # ignore these warnings
 	CPPFLAGS += -ggdb -O0
 endif
 
@@ -60,6 +61,16 @@ else
 	LEAKS_CMD := valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --fair-sched=yes
 	LEAKS_SUPP := --suppressions=valgrind.supp
 endif
+
+#
+# special rules
+#
+
+%.o: %.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(WARNINGS) -c -o $@ $<
+
+%.o: %.cc
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(WARNINGS) -c -o $@ $<
 
 #
 # rule to print config

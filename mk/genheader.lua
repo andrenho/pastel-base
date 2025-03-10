@@ -39,6 +39,8 @@ for i = 1, #content do
 end
 print("0x00 };")
 print("static const size_t " .. varname .. "_sz = " .. #content .. ";")
+print()
+print("static const char* " .. varname .. "_str = (const char *) " .. varname .. ";")
 
 print()
 print("#endif  // " .. define)
