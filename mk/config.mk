@@ -32,8 +32,21 @@ CPPFLAGS += -DPROJECT_VERSION=\"$(PROJECT_VERSION)\"
 
 CONFIG_MK_DIR:= $(dir $(lastword $(MAKEFILE_LIST)))
 GENHEADER := $(CONFIG_MK_DIR)/genheader.lua
-%.h: %
-	$(GENHEADER) $^ > $@
+
+%.png.h: %.png; $(GENHEADER) $^ > $@
+%.jpg.h: %.jpg; $(GENHEADER) $^ > $@
+%.wav.h: %.wav; $(GENHEADER) $^ > $@
+%.mod.h: %.mod; $(GENHEADER) $^ > $@
+%.ttf.h: %.ttf; $(GENHEADER) $^ > $@
+%.txt.h: %.txt; $(GENHEADER) $^ > $@
+
+%.lua.h: %.lua
+ifdef RELEASE
+	$(GENHEADER) $^ > $@ lua-strip
+else
+	$(GENHEADER) $^ > $@ lua
+endif
+
 .DELETE_ON_ERROR=%.h
 
 #
