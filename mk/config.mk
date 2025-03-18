@@ -8,7 +8,7 @@
 
 CFLAGS += -D_GNU_SOURCE
 CPPFLAGS += -MMD -MP   # generate dependencies
-CXXFLAGS += -std=c++20
+CXXFLAGS += -std=c++20 -I.
 LDFLAGS += -lm
 
 ifdef RELEASE
@@ -39,6 +39,7 @@ GENHEADER := $(CONFIG_MK_DIR)/genheader.lua
 %.mod.h: %.mod; $(GENHEADER) $^ > $@
 %.ttf.h: %.ttf; $(GENHEADER) $^ > $@
 %.txt.h: %.txt; $(GENHEADER) $^ > $@
+%.bin.h: %.bin; $(GENHEADER) $^ > $@
 
 %.lua.h: %.lua
 ifdef RELEASE
