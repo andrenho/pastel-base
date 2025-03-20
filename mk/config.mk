@@ -13,11 +13,14 @@ LDFLAGS += -lm
 
 ifdef RELEASE
 	CPPFLAGS += -Ofast -flto -fdata-sections -ffunction-sections -flto -DNDEBUG
-	#LDFLAGS += -flto -Wl,--gc-sections
-	LDFLAGS += -flto -Wl,-dead_strip
+	ifeq ($(CXX),g++)
+		LDFLAGS += -flto -Wl,--gc-sections
+	else
+		LDFLAGS += -flto -Wl,-dead_strip
+	endif
 else
 	WARNINGS := -Wall -Wextra -Wformat-nonliteral -Wshadow -Wwrite-strings -Wmissing-format-attribute -Wswitch-enum -Wmissing-noreturn
-	ifeq ($(CXX),gcc)
+	ifeq ($(CXX),g++)
 		WARNINGS += -Wsuggest-attribute=pure -Wsuggest-attribute=const -Wsuggest-attribute=noreturn -Wsuggest-attribute=malloc -Wsuggest-attribute=format -Wsuggest-attribute=cold
 	endif
 	WARNINGS += -Wno-unused-parameter -Wno-unused -Wno-unknown-warning-option -Wno-sign-compare  # ignore these warnings
