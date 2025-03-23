@@ -12,19 +12,19 @@ CXXFLAGS += -std=c++20 -I.
 LDFLAGS += -lm
 
 ifdef RELEASE
-	CPPFLAGS += -Ofast -flto -fdata-sections -ffunction-sections -flto -DNDEBUG
+	CPPFLAGS += -Ofast -flto -fdata-sections -ffunction-sections -flto -DNDEBUG -DRELEASE
 	ifeq ($(CXX),g++)
 		LDFLAGS += -flto -Wl,--gc-sections
 	else
 		LDFLAGS += -flto -Wl,-dead_strip
 	endif
 else
+	CPPFLAGS += -ggdb -O0 -DDEV
 	WARNINGS := -Wall -Wextra -Wformat-nonliteral -Wshadow -Wwrite-strings -Wmissing-format-attribute -Wswitch-enum -Wmissing-noreturn
 	ifeq ($(CXX),g++)
 		WARNINGS += -Wsuggest-attribute=pure -Wsuggest-attribute=const -Wsuggest-attribute=noreturn -Wsuggest-attribute=malloc -Wsuggest-attribute=format -Wsuggest-attribute=cold
 	endif
 	WARNINGS += -Wno-unused-parameter -Wno-unused -Wno-unknown-warning-option -Wno-sign-compare  # ignore these warnings
-	CPPFLAGS += -ggdb -O0
 endif
 
 CPPFLAGS += -DPROJECT_VERSION=\"$(PROJECT_VERSION)\"
