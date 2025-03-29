@@ -57,7 +57,7 @@ endif
 # generate rule dependencies
 #
 
-DEPENDS = $(shell find . -name *.d)
+DEPENDS = $(shell find . -type f -name '*.d')
 -include $(DEPENDS)
 CLEANFILES := $(DEPENDS) libluajit.a
 
