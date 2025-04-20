@@ -40,6 +40,7 @@ GENHEADER := $(CONFIG_MK_DIR)/genheader.lua
 %.jpg.h: %.jpg; $(GENHEADER) $^ > $@
 %.wav.h: %.wav; $(GENHEADER) $^ > $@
 %.mod.h: %.mod; $(GENHEADER) $^ > $@
+%.otf.h: %.otf; $(GENHEADER) $^ > $@
 %.ttf.h: %.ttf; $(GENHEADER) $^ > $@
 %.txt.h: %.txt; $(GENHEADER) $^ > $@
 %.bin.h: %.bin; $(GENHEADER) $^ > $@
